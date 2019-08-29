@@ -126,8 +126,22 @@ library triggers initializer init
 	destructable createDestructableZ(integer id,real x,real y,real z,real face,real scale,integer var)
 	{
 		gdest1 = CreateDestructableZ(id,x,y,z,face,scale,var)
+		SaveReal(gdest1,"z",z)
+		SaveReal(gdest1,"face",face)
+		SaveReal(gdest1,"scale",scale)
+		SaveInteger(gdest1,"var",var)
 		TriggerRegisterDeathEvent(getTrigger(death),gdest1)
 		return gdest1
+	}
+
+	define
+	{
+		//real getDestructableZ
+		getDestructableZ(d)=LoadReal(d,"z")
+		//real getDestructableScale
+		getDestructableScale(d)=LoadReal(d,"scale")
+		//integer getDestructableVariation
+		getDestructableVariation(d)=LoadInteger(d,"var")
 	}
 
 	define

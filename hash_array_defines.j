@@ -30,14 +30,18 @@ define
     removeIndexValue(vt,sc,s)=removeValue(vt,sc+s+I2S(getIndex(sc)))
     removeIndexValue(vt,s)=removeIndexValue(vt,scope_prefix,s)
 
+    //function getArrayValue
+    getArrayValue(vt,sc,s,i)=loadValue(vt,sc+s+I2S(i))
+    getArrayValue(vt,s,i)=getArrayValue(vt,scope_prefix,s,i)
+
     //constant string index2_str
     index2_str = "index2"
 
     //function add2Index
-    add2Index(s)=addInteger(s+I2S(getIndex(s))+index2_str,1)
+    add2Index(s)=addInteger(s+I2S(LoadInteger(hash,GetHandleId(hash),StringHash(s+index_str)))+index2_str, 1)
     add2Index=add2Index(scope_prefix)
     //integer get2Index
-    get2Index(s)=LoadInteger(s+I2S(getIndex(s))+index2_str)
+    get2Index(s)=LoadInteger(s+I2S(LoadInteger(hash,GetHandleId(hash),StringHash(s+index_str)))+index2_str)
     get2Index=get2Index(scope_prefix)
 
     //function save2IndexValue
@@ -55,6 +59,10 @@ define
     //function remove2IndexValue
     remove2IndexValue(vt,sc,s)=removeValue(vt,sc+s+I2S(getIndex(sc))+I2S(get2Index(sc)))
     remove2IndexValue(vt,s)=remove2IndexValue(vt,scope_prefix,s)
+
+    //function get2ArrayValue
+    get2ArrayValue(vt,sc,s,i,j)=loadValue(vt,sc+s+I2S(i)+I2S(j))
+    get2ArrayValue(vt,s,i,j)=get2ArrayValue(vt,scope_prefix,s,i,j)
 
     //function addIndexHandle
     addIndexHandle(h,s)=addInteger(h,s+index_str,1)
@@ -79,6 +87,10 @@ define
     removeIndexHandleValue(vt,h,sc,s)=removeValue(vt,h,sc+s+I2S(getIndexHandle(h,sc)))
     removeIndexHandleValue(vt,h,s)=removeIndexHandleValue(vt,h,scope_prefix,s)
 
+    //function getArrayHandleValue
+    getArrayHandleValue(vt,h,sc,s,i)=loadValue(vt,h,sc+s+I2S(i))
+    getArrayHandleValue(vt,h,s,i)=getArrayHandleValue(vt,h,scope_prefix,s,i)
+
     //function add2IndexHandle
     add2IndexHandle(h,s)=addInteger(h,s+I2S(getIndexHandle(h,s))+index2_str,1)
     add2IndexHandle(h)=add2IndexHandle(h,scope_prefix)
@@ -101,6 +113,10 @@ define
     //function remove2IndexHandleValue
     remove2IndexHandleValue(vt,h,sc,s)=removeValue(vt,h,sc+s+I2S(getIndexHandle(h,sc))+I2S(get2IndexHandle(h,sc)))
     remove2IndexHandleValue(vt,h,s)=remove2IndexHandleValue(vt,h,scope_prefix,s)
+
+    //function get2ArrayHandleValue
+    get2ArrayHandleValue(vt,h,sc,s,i,j)=loadValue(vt,h,sc+s+I2S(i)+I2S(j))
+    get2ArrayHandleValue(vt,h,s,i,j)=get2ArrayHandleValue(vt,h,scope_prefix,s,i,j)
 }
 
 scope HashScope

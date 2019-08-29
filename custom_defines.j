@@ -120,6 +120,12 @@ library customDefines
         //unit enumUnit
         enumUnit=GetEnumUnit() 
 
+        //destructable filterDest
+        filterDest=GetFilterDestructable()
+
+        //destructable enumDest
+        enumDest=GetEnumDestructable()
+
         //boolean memHackEnabled
         memHackEnabled = 0
 

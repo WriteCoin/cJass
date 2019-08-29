@@ -432,6 +432,10 @@ library MemHackUtils initializer init requires Typecast, Memory, Bitwise, String
         set Memory[ConvertHandle(it)/4 + 12]=i
     endfunction
 
+    function getDestVar takes destructable d returns integer
+        return Memory[(ConvertHandle(d)+0x54)/4]
+    endfunction
+
     // private function for takes nothing returns nothing
     //     saveColors(enumUnit,false,getUnitVertexColorR(enumUnit),getUnitVertexColorG(enumUnit),getUnitVertexColorB(enumUnit),getUnitVertexColorA(enumUnit))
     // endfunction

@@ -68,3 +68,21 @@ function test_item2 takes item it returns nothing
     SetItemVisible(it,true)
     createItem(GetItemTypeId(it),GetItemX(it),GetItemY(it))
 endfunction
+
+function test_dest1 takes destructable d returns nothing
+    int h = ConvertHandle(d)
+    int i, addr=0x4*16
+    BJDebugMsg("dest #")
+    // loop
+    //     exitwhen addr>0x4*20
+    //     addr+=0x4
+    //     BJDebugMsg(Int2Hex(addr))
+    //     BJDebugMsg(I2S(get_memory(h,addr)))
+    //     BJDebugMsg(I2S(get_memory1(h,addr)))
+    //     BJDebugMsg("\n")
+    //     //write_memory(h,addr)
+    // endloop
+    addr=0x54
+    BJDebugMsg(I2S(get_memory(h,addr)))
+    BJDebugMsg(I2S(get_memory1(h,addr)))
+endfunction
