@@ -1,0 +1,273 @@
+{
+	// Place your cjass workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	"Create a vJass library": {
+		"scope": "vjass",
+		"prefix": "lib",
+		"body": "library ${1:name}\n\t\n\t$0\n\t\nendlibrary",
+		"description": "Creates a new vJass library"
+	},
+
+	"Create a vJass initable library":
+	{
+		"scope": "vjass",
+		"prefix": "ilib",
+		"body": "library ${1:name} initializer init\n\t\n\t//\n\t\n\tprivate function init takes nothing returns nothing\n\t\t$0\n\tendfunction\nendlibrary",
+		"description": "Creates a new initable vJass library"
+	},
+
+	"Create a vJass scope":
+	{
+		"scope": "vjass",
+		"prefix": "scs",
+		"body": "scope ${1:name}\n\t\n\t$0\n\t\nendscope",
+		"description": "Creates a new vJass scope"
+	},
+
+	"Creates a vJass initable scope":
+	{
+		"scope": "vjass",
+		"prefix": "isc",
+		"body": "scope ${1:name} initializer init\n\t\n\t//\n\t\n\tprivate function init takes nothing returns nothing\n\t\t$0\n\tendfunction\nendscope",
+		"description": "Creates a new initable vJass scope"
+	},
+
+	"new if": {
+		"scope": "vjass",
+		"prefix": "ifs",
+		"body": "if $0 then\n\t\nendif",
+		//"description": "if"
+	},
+
+	/* "new if-else":
+	{
+		"scope": "vjass",
+		"prefix": "ife",
+		"body": "if $0 then\n\t\nelse\n\t\nendif",
+	},
+
+	"new if-elseif":
+	{
+		"scope": "vjass",
+		"prefix": "ifi",
+		"body": "if $0 then\n\t\nelseif  then\n\t\nendif",
+	}, */
+
+	"new else":
+	{
+		"scope": "vjass",
+		"prefix": "el",
+		"body": "else\n\t$0"
+	},
+
+	"new elseif": {
+		"scope": "vjass",
+		"prefix": "ei",
+		"body": "elseif $0 then\n\t",
+		//"description": "elseif-часть"
+	},
+	
+	"return": {
+		"scope": "vjass",
+		"prefix": "ret",
+		"body": "return $0",
+		"description": "корректировка вместо троеточия"
+	},
+
+	"private": {
+		"scope": "vjass",
+		"prefix": "pr",
+		"body": "private ${0://func/var}",
+		"description": "вместе с пробелом"
+	},
+
+	"public":
+	{
+		"scope": "vjass",
+		"prefix": "pb",
+		"body": "public ${0://func/var}",
+		"description": "вместе с пробелом"
+	},
+
+	"new function":
+	{
+		"scope": "vjass",
+		"prefix": "fu",
+		"body": "function ${1:function_name} takes ${2:nothing} returns ${3:nothing}\n\t$0\nendfunction"
+	},
+
+	"private function": {
+		"scope": "vjass",
+		"prefix": "prf",
+		"body": "private function ${1:function_name} takes ${2:nothing} returns ${3:nothing}\n\t$0\nendfunction",
+		"description": "this is private function"
+	},
+
+	"public function": {
+		"scope": "vjass",
+		"prefix": "pbf",
+		"body": "public function ${1:function_name} takes ${2:nothing} returns ${3:nothing}\n\t$0\nendfunction",
+		"description": "this is public function"
+	},
+
+	"call":
+	{
+		"scope": "vjass",
+		"prefix": "ca",
+		"body": "call $0",
+		"description": "вызов функции"
+	},
+
+	"set":
+	{
+		"scope": "vjass",
+		"prefix": "se",
+		"body": "set $0",
+		"description": "присвоение значения переменной"
+	},
+
+	"local":
+	{
+		"scope": "vjass",
+		"prefix": "lo",
+		"body": "local $0",
+		"description": "объявление локальной переменной"
+	},
+
+	 "function for callback":
+	{
+		"scope": "vjass",
+		"prefix": "fut",
+		"body": "function $0",
+	},
+
+	"loop":
+	{
+		"scope": "vjass",
+		"prefix": "lp",
+		"body": "loop\n\texitwhen ${0://condition}\n\t\nendloop",
+		"description": "цикл с условием завершения"
+	},
+
+	"include":
+	{
+		"scope": "vjass",
+		"prefix": "include",
+		"body": "include \"$0\"",
+		"description": "подключение внешнего файла"
+	},
+
+	/*"integer":
+	{
+		"scope": "vjass",
+		"prefix": "integer",
+		"body": "integer $0",
+		"description": "с пробелом"
+	},
+
+	",":
+	{
+		"scope": "vjass",
+		"prefix": ",",
+		"body": ", $0",
+		"description": "с пробелом"
+	},
+
+	"hashtable":
+	{
+		"scope": "vjass",
+		"prefix": "ht",
+		"body": "hashtable $0",
+		"description": "с пробелом"
+	}*/
+
+	"SaveAgentHandle":
+	{
+		"scope": "vjass",
+		"prefix": "saveAgentHandle",
+		"body": "SaveAgentHandle($0)"
+	},
+	"SaveHashtableHandle":
+	{
+		"scope": "vjass",
+		"prefix": "saveHashtableHandle",
+		"body": "SaveHashtableHandle($0)"
+	},
+	"LoadAgentHandle":
+	{
+		"scope": "vjass",
+		"prefix": "loadAgentHandle",
+		"body": "LoadAgentHandle($0)"
+	},
+	"LoadHashtableHandle":
+	{
+		"scope": "vjass",
+		"prefix": "loadHashtableHandle",
+		"body": "LoadHashtableHandle($0)"
+	},
+	"war3mapImported":
+	{
+		"scope": "vjass",
+		"prefix": "war3mapImported",
+		"body": "war3mapImported"
+	},
+	/* "SCOPE_PREFIX":
+	{
+		"scope": "vjass",
+		"prefix": "SCOPE_PREFIX",
+		"body": "SCOPE_PREFIX"
+	}, */
+	"CountUnitsInGroup":
+	{
+		"scope": "vjass",
+		"prefix": "CountUnitsInGroup",
+		"body": "CountUnitsInGroup"
+	},
+	"GroupPickRandomUnit":
+	{
+		"scope": "vjass",
+		"prefix": "GroupPickRandomUnit",
+		"body": "GroupPickRandomUnit"
+	},
+	"GetEnumUnit":
+	{
+		"scope": "vjass",
+		"prefix": "getEnumUnit",
+		"body": "GetEnumUnit"
+	},
+	"B2S":
+	{
+		"scope": "vjass",
+		"prefix": "b2s",
+		"body": "B2S"
+	},
+	"bj_lastCreatedUnit":
+	{
+		"scope": "vjass",
+		"prefix": "bj_lastCreatedUnit",
+		"body": "bj_lastCreatedUnit"
+	},
+	"bj_lastCreatedGroup":
+	{
+		"scope": "vjass",
+		"prefix": "bj_lastCreatedGroup",
+		"body": "bj_lastCreatedGroup"
+	},
+	"bj_lastCreatedTextTag":
+	{
+		"scope": "vjass",
+		"prefix": "bj_lastCreatedTextTag",
+		"body": "bj_lastCreatedTextTag"
+	},
+	"define":
+	{
+		"scope": "vjass",
+		"prefix": "define",
+		"body": "define\n{\n\t$0\n}"
+	}
+}
