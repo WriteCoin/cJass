@@ -1,3 +1,5 @@
+#guard global
+
 integer gint = 0
 integer gint1 = 0
 integer gint2 = 0
@@ -76,7 +78,10 @@ code gcode2 = null
 
 constant hashtable hash = InitHashtable()
 
-gamecache ggamecache = null
+gamecache ggamecache = null#guard hash_defines
+
+include "cjass\global.j"
+include "cjass\hash_array_defines.j"
 
 define
 {
@@ -92,6 +97,7 @@ define
 	saveValue(h,vt,k,s,v)=Save##vt##(h,k,s,v)
 	saveValue(vt,h,s,v)=saveValue(hash,vt,GetHandleId(h),StringHash(s),v)
 	saveValue(vt,s,v)=saveValue(vt,hash,s,v)
+	saveValue(vt,v)=saveValue(vt,`v`,v)
 
 	//function loadValue
 	loadValue(h,vt,k,s)=Load##vt##(h,k,s)
@@ -598,12 +604,15 @@ define
 	FlushChildHashtable(k,b) = FlushChildHashtable(hash,k,b) */
 	FlushChildHashtable(h,k)=FlushChild##Hashtable(h,k)
 	FlushChildHashtable(h)=FlushChildHashtable(hash,GetHandleId(h))
-}
+}#guard custom_defines
+
+include "cjass\hash_defines.j"
 
 library customDefines
 
     define
-    {
+    { 
+
         //constant real max_real_value = 1095267328
         max_real_value = 1095267328
 
@@ -612,6 +621,18 @@ library customDefines
         //boolean isUnitExploded
         isUnitExploded(u)=LoadBoolean(u,exploded_str)
 
+        //real setUnitHP
+        setUnitHP(u,r)=SetUnitState(u,UNIT_STATE_LIFE,r)
+        //real addUnitHP
+        addUnitHP(u,r)=setUnitHP(u,GetWidgetLife(u)+r)
+        //real setUnitMP
+        setUnitMP(u,r)=SetUnitState(u,UNIT_STATE_MANA,r)
+        //real getUnitMP
+        getUnitMP(u)=GetUnitState(u,UNIT_STATE_MANA)
+        //real addUnitMP
+        addUnitMP(u,r)=setUnitMP(u,getUnitMP(u)+r)
+        
+
         //string ability_blocked_str
         ability_blocked_str = "ability_blocked"
         //boolean isAbilityBlocked
@@ -619,6 +640,9 @@ library customDefines
 
         //real getParabola
         getParabola(z,d,r)=(4 * z / d) * (d - r) * (r / d)
+        //z - макс. высота на середине расстояния
+        //d - общее расстояние до цели
+        //x - расстояние от текущей точки до конечной
 
         //real getSpeededMove
         getSpeededMove(v,t,a)=v*t + a*Pow(t,2)/2
@@ -700,6 +724,7 @@ library customDefines
             endloop
         }
         forAB(i,a,b,body)=forAB(i,a,b,+,body)
+        forAB(i,a,body)=forAB(i,i,a,body)
 
         //string size_str
         size_str = "size"
@@ -718,11 +743,14 @@ library customDefines
         //unit enumUnit
         enumUnit=GetEnumUnit() 
 
-		//destructable filterDest
-		filterDest=GetFilterDestructable()
+        //destructable filterDest
+        filterDest=GetFilterDestructable()
 
-		//destructable enumDest
-		enumDest=GetEnumDestructable()
+        //destructable enumDest
+        enumDest=GetEnumDestructable()
+
+        //timer expiredTimer
+        expiredTimer=GetExpiredTimer()
 
         //boolean memHackEnabled
         memHackEnabled = 0
@@ -1078,7 +1106,9 @@ library customDefines
         destroyLoadEffect(s)=destroyLoadEffect(hash,s)
     }
 
-endlibrary
+endlibrary#guard hook_defines
+
+include "cjass\custom_defines.j"
 
 define
 {
@@ -1316,8 +1346,12 @@ library hookDefines
 		endif
 		return null
 	}
-endlibrary
 
+	define
+	{
+		OrderId2String(i)=OrderId2StringBJ(i)
+	}
+endlibrary#guard handle_counter
 scope handleCounter
 	
 	public leaderboard board
@@ -1357,7 +1391,10 @@ scope handleCounter
 	function init_HandleCounter takes nothing returns nothing
 		call TimerStart(CreateTimer(),0,false,function act)
 	endfunction
-endscope
+endscope#guard dummy
+
+include "cjass\hash_defines.j"
+include "cjass\custom_defines.j"
 
 scope dummy
 
@@ -1405,7 +1442,9 @@ scope dummy
 			set i=i+1
 		endloop
 	endfunction
-endscope
+endscope#guard triggers
+
+include "cjass\common.j"
 
 library triggers initializer init
 
@@ -1522,6 +1561,7 @@ library triggers initializer init
 	//trigger death
 
 	//function createDestructable
+	
 	define 
 	{
 		createDestructable(id,x,y,z,face,scale,var)=createDestructableZ(id,x,y,z,face,scale,var)
@@ -1530,8 +1570,22 @@ library triggers initializer init
 	destructable createDestructableZ(integer id,real x,real y,real z,real face,real scale,integer var)
 	{
 		gdest1 = CreateDestructableZ(id,x,y,z,face,scale,var)
+		SaveReal(gdest1,"z",z)
+		SaveReal(gdest1,"face",face)
+		SaveReal(gdest1,"scale",scale)
+		SaveInteger(gdest1,"var",var)
 		TriggerRegisterDeathEvent(getTrigger(death),gdest1)
 		return gdest1
+	}
+
+	define
+	{
+		//real getDestructableZ
+		getDestructableZ(d)=LoadReal(d,"z")
+		//real getDestructableScale
+		getDestructableScale(d)=LoadReal(d,"scale")
+		//integer getDestructableVariation
+		getDestructableVariation(d)=LoadInteger(d,"var")
 	}
 
 	define
@@ -1545,6 +1599,12 @@ library triggers initializer init
 		TriggerRegisterDeathEvent(getTrigger(death),gitem1)
 		return gitem1
 	}
+
+	private function playerChat takes nothing returns nothing
+		if SubString(GetEventPlayerChatString(),0,1)=="/" or SubString(GetEventPlayerChatString(),0,1)=="-" and SubString(GetEventPlayerChatString(),1,6)=="clear" then
+			clearTextMessagesForPlayer(GetTriggerPlayer())
+		endif
+	endfunction
 	
 	private function init takes nothing returns nothing
 		int i=0
@@ -1598,6 +1658,8 @@ library triggers initializer init
 
 		SaveTriggerHandle("PlayerLeave",CreateTrigger())
         forAB(i,0,bj_MAX_PLAYERS-1,+,TriggerRegisterPlayerEventLeave(getTrigger(playerLeave),Player(i)))
+
+		triggerAddAction(playerChat)
 
         //any unit event
 
@@ -1753,7 +1815,10 @@ library triggers initializer init
 		SaveTriggerHandle("Death",CreateTrigger())
 
 	endfunction
-endlibrary
+endlibrary#guard host
+
+include "cjass\hash_defines.j"
+include "cjass\triggers.j"
 
 scope getHost initializer init
 
@@ -1783,7 +1848,12 @@ scope getHost initializer init
 	private function init takes nothing returns nothing
 		call triggerAddAction(singleTimer)
 	endfunction
-endscope
+endscope#guard damage_system
+
+include "cjass\global.j"
+include "cjass\hash_defines.j"
+include "cjass\triggers.j"
+include "cjass\custom_defines.j"
 
 //code damageSystem
 scope damageSystem initializer init
@@ -1941,7 +2011,10 @@ scope damageSystem initializer init
 		TriggerAddCondition(getTrigger(unitDamagedAttack),function unitDamagedAttack_cond)
 		triggerAddAction(unitDamagedAttack)
 	endfunction
-endscope
+endscope#guard mui
+
+include "cjass\hash_defines.j"
+include "cjass\hook_defines.j"
 
 library MUI
 
@@ -2035,7 +2108,10 @@ library MUI
 		SaveReal(lastMUI,"time",time)
 		TimerStart(lastMUI,period,true,function effectTimer)
 	endfunction
-endlibrary
+endlibrary#guard mui_defines
+
+include "cjass\hash_defines.j"
+include "cjass\mui.j"
 
 define
 {
@@ -2357,9 +2433,7 @@ define
 
     //function muiAddStrPost
     muiAddStrPost(s,v)=addStrPost(GetExpiredTimer(),s,v)
-}
-
-#guard hash_array_defines
+}#guard hash_array_defines
 
 include "cjass\hash_defines.j"
 
@@ -2378,6 +2452,7 @@ define
     //function saveIndexValue
     saveIndexValue(vt,sc,s,v)=saveValue(vt,sc+s+I2S(getIndex(sc)),v)
     saveIndexValue(vt,s,v)=saveIndexValue(vt,scope_prefix,s,v)
+    saveIndexValue(vt,v)=saveIndexValue(vt,`v`,v)
 
     //function getIndexValue
     getIndexValue(vt,sc,s)=loadValue(vt,sc+s+I2S(getIndex(sc)))
@@ -2391,14 +2466,18 @@ define
     removeIndexValue(vt,sc,s)=removeValue(vt,sc+s+I2S(getIndex(sc)))
     removeIndexValue(vt,s)=removeIndexValue(vt,scope_prefix,s)
 
+    //function getArrayValue
+    getArrayValue(vt,sc,s,i)=loadValue(vt,sc+s+I2S(i))
+    getArrayValue(vt,s,i)=getArrayValue(vt,scope_prefix,s,i)
+
     //constant string index2_str
     index2_str = "index2"
 
     //function add2Index
-    add2Index(s)=addInteger(s+I2S(getIndex(s))+index2_str,1)
+    add2Index(s)=addInteger(s+I2S(LoadInteger(hash,GetHandleId(hash),StringHash(s+index_str)))+index2_str, 1)
     add2Index=add2Index(scope_prefix)
     //integer get2Index
-    get2Index(s)=LoadInteger(s+I2S(getIndex(s))+index2_str)
+    get2Index(s)=LoadInteger(s+I2S(LoadInteger(hash,GetHandleId(hash),StringHash(s+index_str)))+index2_str)
     get2Index=get2Index(scope_prefix)
 
     //function save2IndexValue
@@ -2416,6 +2495,10 @@ define
     //function remove2IndexValue
     remove2IndexValue(vt,sc,s)=removeValue(vt,sc+s+I2S(getIndex(sc))+I2S(get2Index(sc)))
     remove2IndexValue(vt,s)=remove2IndexValue(vt,scope_prefix,s)
+
+    //function get2ArrayValue
+    get2ArrayValue(vt,sc,s,i,j)=loadValue(vt,sc+s+I2S(i)+I2S(j))
+    get2ArrayValue(vt,s,i,j)=get2ArrayValue(vt,scope_prefix,s,i,j)
 
     //function addIndexHandle
     addIndexHandle(h,s)=addInteger(h,s+index_str,1)
@@ -2440,6 +2523,10 @@ define
     removeIndexHandleValue(vt,h,sc,s)=removeValue(vt,h,sc+s+I2S(getIndexHandle(h,sc)))
     removeIndexHandleValue(vt,h,s)=removeIndexHandleValue(vt,h,scope_prefix,s)
 
+    //function getArrayHandleValue
+    getArrayHandleValue(vt,h,sc,s,i)=loadValue(vt,h,sc+s+I2S(i))
+    getArrayHandleValue(vt,h,s,i)=getArrayHandleValue(vt,h,scope_prefix,s,i)
+
     //function add2IndexHandle
     add2IndexHandle(h,s)=addInteger(h,s+I2S(getIndexHandle(h,s))+index2_str,1)
     add2IndexHandle(h)=add2IndexHandle(h,scope_prefix)
@@ -2462,6 +2549,10 @@ define
     //function remove2IndexHandleValue
     remove2IndexHandleValue(vt,h,sc,s)=removeValue(vt,h,sc+s+I2S(getIndexHandle(h,sc))+I2S(get2IndexHandle(h,sc)))
     remove2IndexHandleValue(vt,h,s)=remove2IndexHandleValue(vt,h,scope_prefix,s)
+
+    //function get2ArrayHandleValue
+    get2ArrayHandleValue(vt,h,sc,s,i,j)=loadValue(vt,h,sc+s+I2S(i)+I2S(j))
+    get2ArrayHandleValue(vt,h,s,i,j)=get2ArrayHandleValue(vt,h,scope_prefix,s,i,j)
 }
 
 scope HashScope

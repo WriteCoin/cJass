@@ -411,6 +411,119 @@ library MemHackUtils initializer init requires Typecast, Memory, Bitwise, String
     function setUnitTypeId takes unit u,integer i returns nothing
         set Memory[ConvertHandle(u) / 4 + 12]=i
     endfunction
+
+    // ====================================================================================================
+    // ====================  функции для работы c НР и МП
+    // ====================================================================================================
+    //-----------------------------------------------------------------------------------------
+    function SetUnitMaxHP4Address takes integer pConvertedHandle, real newhp returns nothing
+        local integer pOffset2 = GetUnitAddressFloatsRelated(pConvertedHandle,0xA0)
+        set Memory[(pOffset2+0x84)/4]=cleanInt(realToIndex(newhp))
+    endfunction
+    function SetUnitMaxMP4Address takes integer pConvertedHandle, real newmp returns nothing
+        local integer pOffset2 = GetUnitAddressFloatsRelated(pConvertedHandle,0xC0)
+        set Memory[(pOffset2+0x84)/4]=cleanInt(realToIndex(newmp))
+    endfunction
+    function GetUnitHPRegenForAddress takes integer pConvertedHandle returns real
+        local integer pOffset2 = GetUnitAddressFloatsRelated(pConvertedHandle,0xA0)
+        return cleanReal(indexToReal(Memory[(pOffset2+0x7C)/4]))
+    endfunction
+    function SetUnitHPRegenForAddress takes integer pConvertedHandle, real r returns nothing
+        local integer pOffset2 = GetUnitAddressFloatsRelated(pConvertedHandle,0xA0)
+        set Memory[(pOffset2+0x7C)/4]=cleanInt(realToIndex(r))
+    endfunction
+    function GetUnitMPRegenForAddress takes integer pConvertedHandle returns real
+        local integer pOffset2 = GetUnitAddressFloatsRelated(pConvertedHandle,0xC0)
+    //	call echo(Int2Hex(pOffset2))
+        return cleanReal(indexToReal(Memory[(pOffset2+0x7C)/4]))
+    endfunction
+    function SetUnitMPRegenForAddress takes integer pConvertedHandle, real r returns nothing
+        local integer pOffset2 = GetUnitAddressFloatsRelated(pConvertedHandle,0xC0)
+        set Memory[(pOffset2+0x7C)/4]=cleanInt(realToIndex(r))
+    endfunction
+
+    function setUnitMaxHP takes unit u, real newhp returns nothing // меняет ХП юнита
+        call SetUnitMaxHP4Address(ConvertHandle(u),newhp)
+    endfunction
+    //-----------------------------------------------------------------------------------------
+    function setUnitMaxMP takes unit u, real newmp returns nothing  // меняет МП юнита
+        call SetUnitMaxMP4Address(ConvertHandle(u),newmp)
+    endfunction
+    //-----------------------------------------------------------------------------------------
+    function addUnitMaxHP takes unit u, real hpadd returns nothing // добавляет ХП юнита
+        call setUnitMaxHP(u,GetUnitState(u,UNIT_STATE_MAX_LIFE)+hpadd)
+    endfunction
+    //-----------------------------------------------------------------------------------------
+    function addUnitMaxMP takes unit u, real mpadd returns nothing  // добавляет МП юнита
+        call setUnitMaxMP(u,GetUnitState(u,UNIT_STATE_MAX_MANA)+mpadd)
+    endfunction
+    //-----------------------------------------------------------------------------------------
+    function getUnitHPRegen takes unit u returns real //возвращает реген ХП юнита
+        return GetUnitHPRegenForAddress(ConvertHandle(u))
+    endfunction
+    //-----------------------------------------------------------------------------------------
+    function getUnitMPRegen takes unit u returns real //возвращает реген МП юнита
+        return GetUnitMPRegenForAddress(ConvertHandle(u))
+    endfunction
+    //-----------------------------------------------------------------------------------------
+    function setUnitHPRegen takes unit u, real r returns nothing //устанавливает реген ХП юнита
+        local real curhp=GetWidgetLife(u)
+        if curhp>0 then
+            call SetUnitHPRegenForAddress(ConvertHandle(u),r)
+            call SetWidgetLife(u,curhp)
+        endif
+    endfunction
+    //-----------------------------------------------------------------------------------------
+    function addUnitHPRegen takes unit u, real r returns nothing //добавляет реген ХП юнита
+        local real curhp=GetWidgetLife(u)
+        local integer h
+        if curhp>0 then
+            set h=ConvertHandle(u)
+            call SetUnitHPRegenForAddress(h,r+GetUnitHPRegenForAddress(h))
+            call SetWidgetLife(u,curhp)
+        endif
+    endfunction
+    //-----------------------------------------------------------------------------------------
+    function SetUnitMPRegen takes unit u, real r returns nothing //устанавливает реген МП юнита
+        local real curhp=GetUnitState(u,UNIT_STATE_MANA)
+        if GetUnitState(u,UNIT_STATE_MAX_MANA)>0 then
+            call SetUnitMPRegenForAddress(ConvertHandle(u),r)
+            call SetUnitState(u,UNIT_STATE_MANA,curhp)
+        endif
+    endfunction
+    //-----------------------------------------------------------------------------------------
+    function AddUnitMPRegen takes unit u, real r returns nothing //добавляет реген МП юнита
+        local real curhp=GetUnitState(u,UNIT_STATE_MANA)
+        local integer h
+        if GetUnitState(u,UNIT_STATE_MAX_MANA)>0 then
+            set h=ConvertHandle(u)
+            call SetUnitMPRegenForAddress(h,r+GetUnitMPRegenForAddress(h))
+            call SetUnitState(u,UNIT_STATE_MANA,curhp)
+        endif
+    endfunction
+
+    // ====================================================================================================
+    // ====================  функции для работы c броней // 0 - Light; 1 - Medium; 2 - Heavy; 3 - Fortified; 4 - Normal; 5 - Hero; 6 - Divine; 7 - unarmored; 
+    // ====================================================================================================
+    //-----------------------------------------------------------------------------------------
+    function setUnitArmor takes unit u,real r returns nothing //добавляем брони юниту  
+        set Memory[ConvertHandle(u) / 4 + 56]=cleanInt(realToIndex(r))
+    endfunction
+    //----------------------------------------------------------------------------------------- 
+    function getUnitArmor takes unit u returns real //возвращает количество общей!! брони юнита 
+        return indexToReal(Memory[ConvertHandle(u) / 4 + 56])
+    endfunction
+    //-----------------------------------------------------------------------------------------
+    //integer armorTypesCount
+    define armorTypesCount = 7
+    function getUnitArmorType takes unit u returns integer // возвращает тип брони юинта
+        return Memory[(ConvertHandle(u) + 0xE4)/4]
+    endfunction
+    //-----------------------------------------------------------------------------------------  
+    function setUnitArmorType takes unit u, integer id returns nothing // меняет тип брони юнита
+        set Memory[(ConvertHandle(u) + 0xE4)/4]=id
+    endfunction
+
     
     function getUnitVertexColorB takes unit u returns integer
         return GetByteFromInteger(Memory[(Memory[ConvertHandle(u) / 4 + 0xA]+328)/4],4)

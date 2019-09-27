@@ -5,7 +5,8 @@ include "cjass\hash_defines.j"
 library customDefines
 
     define
-    {
+    { 
+
         //constant real max_real_value = 1095267328
         max_real_value = 1095267328
 
@@ -14,6 +15,18 @@ library customDefines
         //boolean isUnitExploded
         isUnitExploded(u)=LoadBoolean(u,exploded_str)
 
+        //real setUnitHP
+        setUnitHP(u,r)=SetUnitState(u,UNIT_STATE_LIFE,r)
+        //real addUnitHP
+        addUnitHP(u,r)=setUnitHP(u,GetWidgetLife(u)+r)
+        //real setUnitMP
+        setUnitMP(u,r)=SetUnitState(u,UNIT_STATE_MANA,r)
+        //real getUnitMP
+        getUnitMP(u)=GetUnitState(u,UNIT_STATE_MANA)
+        //real addUnitMP
+        addUnitMP(u,r)=setUnitMP(u,getUnitMP(u)+r)
+        
+
         //string ability_blocked_str
         ability_blocked_str = "ability_blocked"
         //boolean isAbilityBlocked
@@ -21,6 +34,9 @@ library customDefines
 
         //real getParabola
         getParabola(z,d,r)=(4 * z / d) * (d - r) * (r / d)
+        //z - макс. высота на середине расстояния
+        //d - общее расстояние до цели
+        //x - расстояние от текущей точки до конечной
 
         //real getSpeededMove
         getSpeededMove(v,t,a)=v*t + a*Pow(t,2)/2
@@ -102,6 +118,7 @@ library customDefines
             endloop
         }
         forAB(i,a,b,body)=forAB(i,a,b,+,body)
+        forAB(i,a,body)=forAB(i,i,a,body)
 
         //string size_str
         size_str = "size"
@@ -125,6 +142,9 @@ library customDefines
 
         //destructable enumDest
         enumDest=GetEnumDestructable()
+
+        //timer expiredTimer
+        expiredTimer=GetExpiredTimer()
 
         //boolean memHackEnabled
         memHackEnabled = 0

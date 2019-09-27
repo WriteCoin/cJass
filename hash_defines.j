@@ -17,6 +17,7 @@ define
 	saveValue(h,vt,k,s,v)=Save##vt##(h,k,s,v)
 	saveValue(vt,h,s,v)=saveValue(hash,vt,GetHandleId(h),StringHash(s),v)
 	saveValue(vt,s,v)=saveValue(vt,hash,s,v)
+	saveValue(vt,v)=saveValue(vt,`v`,v)
 
 	//function loadValue
 	loadValue(h,vt,k,s)=Load##vt##(h,k,s)

@@ -17,6 +17,7 @@ define
     //function saveIndexValue
     saveIndexValue(vt,sc,s,v)=saveValue(vt,sc+s+I2S(getIndex(sc)),v)
     saveIndexValue(vt,s,v)=saveIndexValue(vt,scope_prefix,s,v)
+    saveIndexValue(vt,v)=saveIndexValue(vt,`v`,v)
 
     //function getIndexValue
     getIndexValue(vt,sc,s)=loadValue(vt,sc+s+I2S(getIndex(sc)))

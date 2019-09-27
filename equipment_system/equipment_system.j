@@ -81,6 +81,10 @@ library equipmentSystem initializer init uses triggers
   endfunction
 
   public function id2string takes integer itemid returns string
+    BJDebugMsg("chr1: "+chr(itemid/256/256/256))
+    BJDebugMsg("chr2: "+I2S(ModuloInteger(itemid/256/256,256)))
+    BJDebugMsg("chr3: "+I2S(ModuloInteger(itemid/256,256)))
+    BJDebugMsg("chr4: "+I2S(ModuloInteger(itemid,256)))
     return chr(itemid/256/256/256)+chr(ModuloInteger(itemid/256/256,256))+chr(ModuloInteger(itemid/256, 256))+chr(ModuloInteger(itemid,256))
   endfunction
 
